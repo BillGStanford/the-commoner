@@ -1,0 +1,18 @@
+[
+  {
+    "slug": "marcus-okafor",
+    "name": "Marcus Okafor",
+    "bio": "Marcus Okafor is a journalist and activist based in Detroit. He covers labor organizing, racial capitalism, and the politics of deindustrialization. He is a former UAW organizer and holds an MA in American Studies from Wayne State University.",
+    "title": "Labor Correspondent",
+    "image": "/images/writers/marcus-okafor.jpg",
+    "twitter": "@TheCommonerHQ"
+  },
+  {
+    "slug": "sidoc-haytu",
+    "name": "Sidoc Haytu",
+    "bio": "Sidoc Haytu is a political theorist specializing in Marxism and the cultural politics of race and gender. He is the author of several essays on care work, wages, and the gendered division of labor.",
+    "title": "Political Theorist",
+    "image": "/images/writers/sidoc-haytu.jpg",
+    "twitter": "@TheCommonerHQ"
+  }
+]

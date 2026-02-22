@@ -1,0 +1,403 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800;1,900&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&display=swap');
+
+/* ─── CSS Custom Properties ─────────────────────────────────────────────── */
+:root {
+  --font-playfair: 'Playfair Display', Georgia, serif;
+  --font-source-sans: 'Source Sans 3', system-ui, sans-serif;
+
+  --color-crimson:       #8B1A1A;
+  --color-crimson-light: #A52020;
+  --color-crimson-dark:  #6B1414;
+  --color-ink:           #1A1A1A;
+  --color-ink-soft:      #2D2D2D;
+  --color-ink-muted:     #555555;
+  --color-parchment:     #F5F0E8;
+  --color-parchment-dark:#EDE8DF;
+  --color-rule:          #D4C9B8;
+}
+
+/* ─── Base Reset ─────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--color-parchment);
+  color: var(--color-ink);
+  font-family: var(--font-source-sans);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-playfair);
+  line-height: 1.2;
+  color: var(--color-ink);
+}
+
+/* ─── Masthead ───────────────────────────────────────────────────────────── */
+.masthead-title {
+  font-family: var(--font-playfair);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* ─── Topic Badge ────────────────────────────────────────────────────────── */
+.topic-badge {
+  display: inline-block;
+  font-family: var(--font-source-sans);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-crimson);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.topic-badge:hover { color: var(--color-crimson-light); }
+
+/* ─── Section Rule ───────────────────────────────────────────────────────── */
+.section-rule {
+  border-top: 3px solid var(--color-ink);
+  border-bottom: 1px solid var(--color-rule);
+  padding-top: 4px;
+  margin-bottom: 1.5rem;
+}
+
+/* ─── Card Hover ─────────────────────────────────────────────────────────── */
+.article-card { transition: transform 0.2s ease; }
+.article-card:hover { transform: translateY(-2px); }
+
+/* ─── Ornamental Divider ─────────────────────────────────────────────────── */
+.ornamental-divider {
+  text-align: center;
+  color: var(--color-rule);
+  margin: 3rem 0;
+  font-size: 1.2rem;
+  letter-spacing: 0.5em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ARTICLE PROSE
+   Full HTML support. Writers can use any of the elements below in
+   articles.json "content" field. Mix and match freely.
+   ═══════════════════════════════════════════════════════════════════════════
+
+   QUICK REFERENCE — paste into your article content:
+
+   Paragraphs:        <p>Normal body copy.</p>
+   Lead para:         <p class="lead">Bigger intro paragraph.</p>
+   Drop cap:          <p class="drop-cap">First letter enlarged.</p>
+   Highlight text:    <span class="hl">crimson highlighted text</span>
+   Bold/em:           <strong>bold</strong>  <em>italic</em>
+
+   Headings:          <h2>Section title</h2>
+                      <h3>Sub-section</h3>
+                      <h4>Label heading</h4>
+
+   Blockquote:        <blockquote>Quote text.<cite>— Source</cite></blockquote>
+   Pull quote:        <blockquote class="pull">Big quote.</blockquote>
+   Ink box quote:     <blockquote class="ink-box">Dark bg quote.</blockquote>
+
+   Bullet list:       <ul><li>Item</li></ul>
+   Numbered list:     <ol><li>Item</li></ol>
+
+   Image + caption:   <figure>
+                        <img src="/images/articles/foo.jpg" alt="..." />
+                        <figcaption>Caption text here</figcaption>
+                      </figure>
+
+   Horizontal rule:   <hr />
+
+   Crimson kicker:    <p class="kicker">Economy</p>
+   Callout box:       <div class="callout"><p>Important note.</p></div>
+   Stat callout:      <div class="stat-block"><span class="num">35%</span><span class="label">of income on rent</span></div>
+
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.article-prose {
+  font-family: var(--font-source-sans);
+  color: var(--color-ink-soft);
+}
+
+/* ── Paragraphs ── */
+.article-prose p {
+  margin-bottom: 1.55em;
+  font-size: 1.06rem;
+  line-height: 1.85;
+  color: var(--color-ink-soft);
+}
+
+/* ── Lead paragraph (bigger intro) ── */
+.article-prose p.lead {
+  font-size: 1.22rem;
+  line-height: 1.65;
+  color: var(--color-ink);
+  font-weight: 600;
+  margin-bottom: 1.8em;
+}
+
+/* ── Drop cap ── */
+.article-prose > p:first-of-type::first-letter,
+.article-prose p.drop-cap::first-letter {
+  font-family: var(--font-playfair);
+  font-size: 5rem;
+  font-weight: 900;
+  float: left;
+  line-height: 0.72;
+  margin-right: 0.06em;
+  margin-top: 0.14em;
+  color: var(--color-crimson);
+}
+
+/* ── Kicker label ── */
+.article-prose p.kicker {
+  font-family: var(--font-source-sans);
+  font-size: 0.6rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: var(--color-crimson);
+  margin-bottom: 0.5em;
+}
+
+/* ── Inline highlight ── */
+.article-prose .hl {
+  color: var(--color-crimson);
+  font-weight: 700;
+}
+
+/* ── Headings ── */
+.article-prose h1 {
+  font-size: 2.4rem;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  margin: 2.5em 0 0.6em;
+  color: var(--color-ink);
+}
+
+.article-prose h2 {
+  font-size: 1.65rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  margin: 2.4em 0 0.6em;
+  padding-top: 1.4em;
+  border-top: 2px solid var(--color-rule);
+  color: var(--color-ink);
+}
+
+.article-prose h3 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin: 2em 0 0.5em;
+  color: var(--color-ink);
+}
+
+.article-prose h4 {
+  font-family: var(--font-source-sans);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  margin: 1.8em 0 0.4em;
+  color: var(--color-ink);
+}
+
+/* ── Blockquote — default ── */
+.article-prose blockquote {
+  border-left: 4px solid var(--color-crimson);
+  padding: 0.8rem 0 0.8rem 1.75rem;
+  margin: 2.5rem 0;
+  font-family: var(--font-playfair);
+  font-style: italic;
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--color-ink);
+}
+
+.article-prose blockquote cite {
+  display: block;
+  margin-top: 0.8rem;
+  font-family: var(--font-source-sans);
+  font-style: normal;
+  font-size: 0.62rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--color-ink-muted);
+}
+
+/* ── Blockquote — pull quote (full width dark) ── */
+.article-prose blockquote.pull {
+  background: var(--color-parchment-dark);
+  border-left: none;
+  border-top: 3px solid var(--color-crimson);
+  padding: 2rem 2.5rem;
+  margin: 3rem -1rem;
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+/* ── Blockquote — ink box ── */
+.article-prose blockquote.ink-box {
+  background: var(--color-ink);
+  color: var(--color-parchment);
+  border-left: none;
+  padding: 2.2rem 2.5rem;
+  margin: 3rem 0;
+  font-size: 1.25rem;
+}
+.article-prose blockquote.ink-box cite {
+  color: var(--color-crimson);
+}
+
+/* ── Strong / Em ── */
+.article-prose strong {
+  color: var(--color-ink);
+  font-weight: 700;
+}
+.article-prose em { font-style: italic; }
+
+/* ── Links ── */
+.article-prose a {
+  color: var(--color-crimson);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-crimson) 40%, transparent);
+  text-underline-offset: 3px;
+  transition: color 0.15s, text-decoration-color 0.15s;
+}
+.article-prose a:hover {
+  color: var(--color-ink);
+  text-decoration-color: var(--color-ink);
+}
+
+/* ── Lists ── */
+.article-prose ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 1.6em 0;
+}
+.article-prose ul li {
+  position: relative;
+  padding-left: 1.5em;
+  margin-bottom: 0.6em;
+  font-size: 1.02rem;
+  line-height: 1.75;
+  color: var(--color-ink-soft);
+}
+.article-prose ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 7px;
+  height: 7px;
+  background: var(--color-crimson);
+  transform: rotate(45deg);
+}
+
+.article-prose ol {
+  padding-left: 1.75em;
+  margin: 1.6em 0;
+}
+.article-prose ol li {
+  margin-bottom: 0.6em;
+  font-size: 1.02rem;
+  line-height: 1.75;
+  color: var(--color-ink-soft);
+  padding-left: 0.4em;
+}
+.article-prose ol li::marker {
+  color: var(--color-crimson);
+  font-weight: 900;
+  font-family: var(--font-source-sans);
+}
+
+/* ── Figure + caption ── */
+.article-prose figure {
+  margin: 2.5rem 0;
+}
+.article-prose figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.article-prose figcaption {
+  font-family: var(--font-source-sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--color-ink-muted);
+  margin-top: 0.7rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--color-rule);
+}
+
+/* ── Horizontal rule ── */
+.article-prose hr {
+  border: none;
+  border-top: 1px solid var(--color-rule);
+  margin: 3rem 0;
+}
+
+/* ── Callout box ── */
+.article-prose .callout {
+  background: var(--color-parchment-dark);
+  border-left: 4px solid var(--color-crimson);
+  padding: 1.4rem 1.75rem;
+  margin: 2.5rem 0;
+}
+.article-prose .callout p {
+  margin-bottom: 0;
+  font-size: 0.98rem;
+}
+
+/* ── Stat block ── */
+.article-prose .stat-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  margin: 2.5rem 0;
+  border: 2px solid var(--color-ink);
+  background: var(--color-parchment-dark);
+}
+.article-prose .stat-block .num {
+  font-family: var(--font-playfair);
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: var(--color-crimson);
+  line-height: 1;
+}
+.article-prose .stat-block .label {
+  font-family: var(--font-source-sans);
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-ink-muted);
+  margin-top: 0.5rem;
+}
+
+/* ── Inline code ── */
+.article-prose code {
+  font-family: 'Courier New', monospace;
+  font-size: 0.88em;
+  background: var(--color-parchment-dark);
+  padding: 0.15em 0.4em;
+  color: var(--color-crimson);
+}
+
+/* ─── Print ──────────────────────────────────────────────────────────────── */
+@media print {
+  .no-print { display: none !important; }
+  body { background: white; }
+}

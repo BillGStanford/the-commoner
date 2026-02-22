@@ -1,0 +1,47 @@
+[
+  {
+    "slug": "economy",
+    "name": "Economy",
+    "description": "Analysis of labor, capital, inequality, and the structures that govern economic life under late capitalism."
+  },
+  {
+    "slug": "usa",
+    "name": "USA",
+    "description": "Dispatches from the belly of the beast — politics, culture, and resistance across the American continent."
+  },
+  {
+    "slug": "politics",
+    "name": "Politics",
+    "description": "Electoral strategy, party dynamics, and the broader terrain of power in democratic and authoritarian states."
+  },
+  {
+    "slug": "theory",
+    "name": "Theory",
+    "description": "Marxist thought, critical theory, feminist philosophy, and the intellectual traditions of the left."
+  },
+  {
+    "slug": "opinions",
+    "name": "Opinions",
+    "description": "Sharp takes, polemics, and critical perspectives from our contributors and the broader left. Writers idea's may differ but they are all welcome here."
+  },
+  {
+    "slug": "israel-palestine",
+    "name": "Israel–Palestine",
+    "description": "Unflinching coverage of occupation, resistance, and the international solidarity movement."
+  },
+  {
+    "slug": "socialism",
+    "name": "Socialism",
+    "description": "Visions of a world beyond capitalism — from policy proposals to revolutionary strategy."
+  },
+  {
+    "slug": "climate",
+    "name": "Climate",
+    "description": "The climate crisis, ecological justice, and the fight for a sustainable future."
+  },
+  {
+    "slug": "culture",
+    "name": "Culture",
+    "description": "Art, literature, music, and the cultural expressions of resistance and solidarity."
+  }
+]
