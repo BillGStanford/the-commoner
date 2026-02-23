@@ -45,12 +45,15 @@ export default function Navbar({ topics }: NavbarProps) {
             >
               Donate
             </Link>
-            <Link
-              href="/subscribe"
-              className="text-[0.58rem] font-sans font-black uppercase tracking-[0.2em] bg-crimson text-parchment px-4 py-1.5 hover:bg-crimson-dark transition-colors"
-            >
-              Subscribe
-            </Link>
+<a
+  href="https://www.youtube.com/@thecommonertv"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="text-[0.62rem] font-sans font-black uppercase tracking-[0.2em] bg-crimson text-parchment px-4 py-2 hover:bg-crimson-light transition-colors"
+  onClick={() => setMobileOpen(false)}
+>
+  Subscribe
+</a>
           </nav>
 
           {/* Mobile hamburger */}
@@ -163,9 +166,15 @@ export default function Navbar({ topics }: NavbarProps) {
               <Link href="/donate" className="text-[0.62rem] font-sans font-black uppercase tracking-[0.2em] border border-parchment/30 text-parchment px-4 py-2 hover:bg-parchment/10 transition-colors" onClick={() => setMobileOpen(false)}>
                 Donate
               </Link>
-              <Link href="/subscribe" className="text-[0.62rem] font-sans font-black uppercase tracking-[0.2em] bg-crimson text-parchment px-4 py-2 hover:bg-crimson-light transition-colors" onClick={() => setMobileOpen(false)}>
-                Subscribe
-              </Link>
+<a
+  href="https://www.youtube.com/@thecommonertv"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="text-[0.62rem] font-sans font-black uppercase tracking-[0.2em] bg-crimson text-parchment px-4 py-2 hover:bg-crimson-light transition-colors"
+  onClick={() => setMobileOpen(false)}
+>
+  Subscribe
+</a>
             </div>
           </div>
         </div>
