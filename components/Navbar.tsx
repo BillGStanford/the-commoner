@@ -85,7 +85,7 @@ export default function Navbar({ topics }: NavbarProps) {
               width={400}
               height={140}
               priority
-              className="h-16 sm:h-20 md:h-[110px] w-auto object-contain group-hover:opacity-90 transition-opacity duration-200"
+              className="h-16 sm:h-20 md:h-[130px] w-auto object-contain group-hover:opacity-90 transition-opacity duration-200"
             />
           </Link>
         </div>

@@ -4,7 +4,7 @@
 import type { Metadata } from 'next';
 import type { Article, Writer, Topic } from './types';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://thecommoner.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://thecommoner.vercel.app';
 const SITE_NAME = 'The Commoner';
 const DEFAULT_OG_IMAGE = `${SITE_URL}/images/og-default.jpg`;
 
@@ -22,8 +22,6 @@ export const baseMetadata: Metadata = {
   creator: SITE_NAME,
   publisher: SITE_NAME,
   
-  // FIX: Added icons configuration
-  // Ensure favicon.ico and apple-touch-icon.png are in your /public folder
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
