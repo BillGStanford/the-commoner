@@ -43,5 +43,10 @@
     "slug": "culture",
     "name": "Culture",
     "description": "Art, literature, music, and the cultural expressions of resistance and solidarity."
+  },
+    {
+    "slug": "international",
+    "name": "International",
+    "description": "Global perspectives and international solidarity movements."
   }
 ]
