@@ -30,11 +30,18 @@ function ArticleImage({
 }
 
 export default function HomePage() {
-  const featured = getFeaturedArticle();
   const allArticles = getAllArticles();
   const topics = getAllTopics();
 
-  const latestArticles = allArticles.filter((a) => !a.featured).slice(0, 5);
+  // ── FIX: Filter manually to get multiple featured articles ──
+  // We use the existing 'getAllArticles' and filter for the 'featured' flag.
+  const featuredArticles = allArticles.filter((a) => a.featured).slice(0, 3);
+  // ─────────────────────────────────────────────────────────────
+
+  // Exclude featured from "Latest" list to avoid duplicates
+  const latestArticles = allArticles
+    .filter((a) => !featuredArticles.some(f => f.slug === a.slug))
+    .slice(0, 5);
 
   const topicHighlights = topics
     .map((topic) => {
@@ -47,140 +54,177 @@ export default function HomePage() {
       article: (typeof allArticles)[0];
     }>;
 
-  const secondaryArticles = allArticles.filter((a) => !a.featured).slice(5, 8);
+  const secondaryArticles = allArticles
+    .filter((a) => !featuredArticles.some(f => f.slug === a.slug))
+    .slice(5, 8);
 
   return (
     <div className="min-h-screen bg-parchment selection:bg-crimson selection:text-parchment">
       
-      {/* ── HERO FEATURED ARTICLE ─────────────────────────────────────────── */}
-      {featured && (() => {
-        const author = getWriterBySlug(featured.authorSlug);
-        if (!author) return null;
-        return (
-          <section aria-label="Featured article" className="border-b-2 border-ink">
-            <div className="max-w-[1400px] mx-auto px-6">
+      {/* ── HERO FEATURED SECTION (MULTIPLE) ─────────────────────────────────── */}
+      {featuredArticles.length > 0 && (
+        <section aria-label="Featured articles" className="border-b-2 border-ink bg-parchment">
+          <div className="max-w-[1600px] mx-auto px-6">
+            
+            {/* Header */}
+            <div className="flex items-center gap-4 py-6 border-b border-rule">
+              <span className="bg-crimson text-parchment text-[0.55rem] font-sans font-black uppercase tracking-[0.28em] px-3 py-1.5">
+                Priority Dispatch
+              </span>
+              <div className="flex-1 h-px bg-rule" />
+              <span className="text-[0.6rem] font-sans font-black uppercase tracking-[0.2em] text-ink-muted">
+                Featured Analysis
+              </span>
+            </div>
 
-              <div className="flex items-center gap-4 py-5 border-b border-rule">
-                <span className="bg-crimson text-parchment text-[0.55rem] font-sans font-black uppercase tracking-[0.28em] px-3 py-1.5">
-                  Priority Dispatch
-                </span>
-                <div className="flex-1 h-px bg-rule" />
-                <span className="text-[0.6rem] font-sans font-black uppercase tracking-[0.2em] text-ink-muted">
-                  {featured.topic?.replace(/-/g, ' ')}
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-0 py-10 md:py-14">
-
-                <div className="lg:pr-12 lg:border-r lg:border-rule">
-                  <Link href={`/articles/${featured.slug}/`} className="group block">
-                    <div className="relative w-full overflow-hidden mb-8" style={{ aspectRatio: '16/9' }}>
-                      <ArticleImage
-                        src={featured.image}
-                        alt={featured.imageAlt || featured.title}
-                        sizes="(max-width: 768px) 100vw, 70vw"
-                        className="group-hover:scale-[1.02]"
-                      />
-                      <div className="absolute inset-0 border-b-4 border-crimson opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </div>
-
-                    <p className="text-[0.62rem] font-sans font-black uppercase tracking-[0.3em] text-crimson mb-4">
-                      {featured.topic?.replace(/-/g, ' ')}
-                    </p>
-
-                    <h2
-                      className="font-serif text-[clamp(2.2rem,5vw,4rem)] font-black leading-[1.02] tracking-[-0.02em] text-ink group-hover:text-crimson transition-colors mb-5"
-                    >
-                      {featured.isLive ? `Live: ${featured.title}` : featured.title}
-                    </h2>
-                  </Link>
-
-                  {featured.excerpt && (
-                    <p className="font-sans text-[1.05rem] text-ink-muted leading-relaxed max-w-[640px] mb-8 border-l-[3px] border-crimson pl-5">
-                      {featured.excerpt}
-                    </p>
-                  )}
-
-                  <div className="flex items-center gap-4 pt-5 border-t border-rule">
-                    <div className="w-9 h-9 rounded-full bg-ink flex items-center justify-center text-parchment text-xs font-black font-sans flex-shrink-0">
-                      {author.name.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="text-[0.68rem] font-sans font-black uppercase tracking-[0.18em] text-ink">
-                        {author.name}
-                      </p>
-                      <p className="text-[0.62rem] font-sans text-ink-muted uppercase tracking-widest">
-                        {featured.date} · {featured.readingTime} min read
-                      </p>
-                    </div>
-                    <Link
-                      href={`/articles/${featured.slug}/`}
-                      className="ml-auto text-[0.62rem] font-sans font-black uppercase tracking-[0.2em] text-crimson border-b-2 border-crimson hover:text-ink hover:border-ink transition-colors pb-0.5"
-                    >
-                      Read in full →
+            {/* Grid: 1 Main Feature + 2 Sub-features on Desktop */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-0 border-b border-rule">
+              
+              {/* MAIN FEATURE (Spans 7 cols on large screens) */}
+              {featuredArticles[0] && (() => {
+                const article = featuredArticles[0];
+                const author = getWriterBySlug(article.authorSlug);
+                return (
+                  <div className="lg:col-span-7 border-b md:border-b-0 md:border-r border-rule group">
+                    <Link href={`/articles/${article.slug}/`} className="block h-full">
+                      <div className="relative w-full overflow-hidden" style={{ aspectRatio: '21/9' }}>
+                        <ArticleImage
+                          src={article.image}
+                          alt={article.imageAlt || article.title}
+                          sizes="(max-width: 1024px) 100vw, 60vw"
+                          className="group-hover:scale-[1.02]"
+                        />
+                        <div className="absolute inset-0 border-b-4 border-crimson opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      </div>
+                      
+                      <div className="p-8 md:p-10">
+                        <p className="text-[0.65rem] font-sans font-black uppercase tracking-[0.3em] text-crimson mb-4">
+                          {article.topic?.replace(/-/g, ' ')}
+                        </p>
+                        <h2 className="font-serif text-[clamp(2rem,4vw,3.5rem)] font-black leading-[1.05] tracking-[-0.02em] text-ink group-hover:text-crimson transition-colors mb-5">
+                          {article.isLive ? `Live: ${article.title}` : article.title}
+                        </h2>
+                        
+                        <div className="flex items-center gap-4 mt-6">
+                          {author && (
+                            <>
+                              <div className="w-10 h-10 rounded-full bg-ink flex items-center justify-center text-parchment text-xs font-black font-sans flex-shrink-0">
+                                {author.name.charAt(0)}
+                              </div>
+                              <div>
+                                <p className="text-[0.7rem] font-sans font-black uppercase tracking-[0.18em] text-ink">
+                                  {author.name}
+                                </p>
+                                <p className="text-[0.65rem] font-sans text-ink-muted uppercase tracking-widest">
+                                  {article.date}
+                                </p>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
                     </Link>
                   </div>
-                </div>
+                );
+              })()}
 
-                <aside className="hidden lg:flex flex-col pl-12 pt-2 gap-10">
-
-                  <blockquote className="border-l-[4px] border-crimson pl-7 py-4">
-                    <p className="font-serif text-[1.45rem] font-black italic leading-[1.28] text-ink mb-3">
-                      &ldquo;The analysis capital fears most is the one that names it plainly.&rdquo;
-                    </p>
-                    <cite className="text-[0.58rem] font-sans font-black uppercase tracking-[0.28em] text-ink-muted not-italic">
-                      — The Editors
-                    </cite>
-                  </blockquote>
-
-                  <div className="flex-1">
-                    <p className="text-[0.55rem] font-sans font-black uppercase tracking-[0.28em] text-ink-muted mb-5">
-                      More in {featured.topic?.replace(/-/g, ' ')}
-                    </p>
-                    <ul className="space-y-5">
-                      {allArticles
-                        .filter((a) => a.topic === featured.topic && !a.featured)
-                        .slice(0, 3)
-                        .map((a) => (
-                          <li key={a.slug} className="group">
-                            <Link href={`/articles/${a.slug}/`} className="flex gap-4 items-start">
-                              <div className="relative w-20 h-16 flex-shrink-0 overflow-hidden">
-                                <ArticleImage
-                                  src={a.image}
-                                  alt={a.imageAlt || a.title}
-                                  sizes="80px"
-                                  className="group-hover:scale-105"
-                                />
-                              </div>
-                              <p className="font-sans text-[0.82rem] font-bold text-ink group-hover:text-crimson leading-snug transition-colors">
-                                {a.isLive ? `Live: ${a.title}` : a.title}
-                              </p>
-                            </Link>
-                          </li>
-                        ))}
-                    </ul>
-                  </div>
-
-                  <div className="border-t border-rule pt-6">
-                    <p className="text-[0.55rem] font-sans font-black uppercase tracking-[0.28em] text-ink-muted mb-4">Browse Sections</p>
-                    <div className="flex flex-wrap gap-2">
-                      {topics.slice(0, 6).map((topic) => (
-                        <Link
-                          key={topic.slug}
-                          href={`/topics/${topic.slug}/`}
-                          className="text-[0.58rem] font-sans font-black uppercase tracking-[0.18em] border border-ink text-ink px-3 py-1.5 hover:bg-ink hover:text-parchment transition-colors"
-                        >
-                          {topic.name}
-                        </Link>
-                      ))}
+              {/* SECONDARY FEATURES (Container spans 5 cols) */}
+              <div className="lg:col-span-5 flex flex-col">
+                {featuredArticles.slice(1, 3).map((article, idx) => {
+                  const author = getWriterBySlug(article.authorSlug);
+                  return (
+                    <div 
+                      key={article.slug} 
+                      className={`flex-1 flex flex-col justify-center group relative ${idx === 0 && featuredArticles.length > 2 ? 'border-b border-rule' : ''}`}
+                    >
+                      <Link href={`/articles/${article.slug}/`} className="flex h-full">
+                        <div className="relative w-2/5 overflow-hidden">
+                          <ArticleImage
+                            src={article.image}
+                            alt={article.imageAlt || article.title}
+                            sizes="(max-width: 1024px) 40vw, 25vw"
+                            className="group-hover:scale-105"
+                          />
+                        </div>
+                        <div className="w-3/5 p-6 md:p-8 flex flex-col justify-center">
+                          <p className="text-[0.55rem] font-sans font-black uppercase tracking-[0.25em] text-crimson mb-2">
+                            {article.topic?.replace(/-/g, ' ')}
+                          </p>
+                          <h3 className="font-serif text-[1.2rem] md:text-[1.4rem] font-black leading-[1.15] tracking-tight text-ink group-hover:text-crimson transition-colors mb-3">
+                            {article.isLive ? `Live: ${article.title}` : article.title}
+                          </h3>
+                          {author && (
+                            <p className="text-[0.6rem] font-sans font-bold uppercase tracking-widest text-ink-muted">
+                              {author.name}
+                            </p>
+                          )}
+                        </div>
+                      </Link>
                     </div>
+                  );
+                })}
+                
+                {/* Fallback if only 1 article exists */}
+                {featuredArticles.length < 2 && (
+                  <div className="flex-1 flex items-center justify-center border-t border-rule bg-parchment-dark/30">
+                    <p className="text-[0.65rem] font-sans uppercase tracking-widest text-ink-muted italic">
+                      Awaiting further dispatches...
+                    </p>
                   </div>
-                </aside>
+                )}
               </div>
             </div>
-          </section>
-        );
-      })()}
+
+            {/* Footer of Hero Section: "More in..." & "Browse" */}
+            <div className="bg-parchment-dark/50">
+              <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x border-rule divide-rule">
+                {/* Related to first featured topic */}
+                <div className="p-6 md:p-8">
+                  <p className="text-[0.55rem] font-sans font-black uppercase tracking-[0.28em] text-ink-muted mb-4">
+                    Deep Dive: {featuredArticles[0]?.topic?.replace(/-/g, ' ')}
+                  </p>
+                  <ul className="space-y-4">
+                    {allArticles
+                      .filter((a) => a.topic === featuredArticles[0]?.topic && !a.featured)
+                      .slice(0, 2)
+                      .map((a) => (
+                        <li key={a.slug} className="group">
+                          <Link href={`/articles/${a.slug}/`} className="flex gap-3 items-center">
+                            <div className="relative w-16 h-12 flex-shrink-0 overflow-hidden grayscale group-hover:grayscale-0 transition-all">
+                              <ArticleImage src={a.image} alt={a.title} sizes="64px" />
+                            </div>
+                            <p className="font-sans text-[0.75rem] font-bold text-ink group-hover:text-crimson leading-snug transition-colors">
+                              {a.isLive ? `Live: ${a.title}` : a.title}
+                            </p>
+                          </Link>
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+
+                {/* Topics Quick Links */}
+                <div className="p-6 md:p-8 flex flex-col justify-center">
+                  <p className="text-[0.55rem] font-sans font-black uppercase tracking-[0.28em] text-ink-muted mb-4">
+                    Browse Sections
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {topics.slice(0, 6).map((topic) => (
+                      <Link
+                        key={topic.slug}
+                        href={`/topics/${topic.slug}/`}
+                        className="text-[0.55rem] font-sans font-black uppercase tracking-[0.18em] border border-ink/40 text-ink px-3 py-1.5 hover:bg-ink hover:text-parchment transition-colors"
+                      >
+                        {topic.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+      )}
 
       {/* ── MAIN CONTENT AREA ─────────────────────────────────────────────── */}
       <div className="max-w-[1400px] mx-auto px-6 py-12 md:py-16">
