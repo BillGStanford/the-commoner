@@ -12,6 +12,7 @@ export interface Article {
   image: string;
   imageAlt: string;
   readingTime: number;
+  isLive?: boolean; // ← ADD THIS LINE
 }
 
 export interface Writer {

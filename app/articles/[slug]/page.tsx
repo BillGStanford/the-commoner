@@ -1,5 +1,6 @@
 // Article page — Server Component with full SSG
 import type { Metadata } from 'next';
+import type { Article } from '@/lib/types'; // 1. IMPORT ARTICLE TYPE
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -52,33 +53,34 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://thecommoner.com';
   const articleUrl = `${siteUrl}/articles/${article.slug}/`;
 
-  // Determine Live Status
-  const isLive = article.isLive || false;
-  const displayTitle = isLive ? `Live: ${article.title}` : article.title;
+  // 2. CAST TO ARTICLE TYPE TO FIX THE ERROR
+  const articleData = article as Article;
+  const isLive = articleData.isLive || false;
+  const displayTitle = isLive ? `Live: ${articleData.title}` : articleData.title;
 
   const allArticles = getAllArticles();
   const relatedArticles = allArticles
-    .filter((a) => a.topic === article.topic && a.slug !== article.slug)
+    .filter((a) => a.topic === articleData.topic && a.slug !== articleData.slug)
     .slice(0, 3);
   const trendingArticles = allArticles
-    .filter((a) => a.slug !== article.slug)
+    .filter((a) => a.slug !== articleData.slug)
     .slice(0, 4);
 
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: generateArticleJsonLd(article, author.name) }}
+        dangerouslySetInnerHTML={{ __html: generateArticleJsonLd(articleData, author.name) }}
       />
 
       <div className="min-h-screen bg-parchment">
 
         {/* ── FULL-BLEED HERO ────────────────────────────────────────────── */}
-        {article.image ? (
+        {articleData.image ? (
           <div className="relative w-full overflow-hidden" style={{ height: 'clamp(340px, 55vh, 600px)' }}>
             <Image
-              src={article.image}
-              alt={article.imageAlt || article.title}
+              src={articleData.image}
+              alt={articleData.imageAlt || articleData.title}
               fill
               priority
               sizes="100vw"
@@ -98,7 +100,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
               
               {/* Topic Badge */}
               <Link
-                href={`/topics/${article.topic}/`}
+                href={`/topics/${articleData.topic}/`}
                 className="inline-block bg-ink/80 text-parchment text-[0.55rem] font-sans font-black uppercase tracking-[0.3em] px-3 py-1.5 hover:bg-parchment hover:text-ink transition-colors backdrop-blur-sm"
               >
                 {topicName}
@@ -123,7 +125,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
                   </span>
                 )}
                 <Link
-                  href={`/topics/${article.topic}/`}
+                  href={`/topics/${articleData.topic}/`}
                   className="inline-block bg-parchment text-ink text-[0.55rem] font-sans font-black uppercase tracking-[0.3em] px-3 py-1.5 hover:bg-crimson hover:text-parchment transition-colors"
                 >
                   {topicName}
@@ -144,7 +146,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
               <ol className="flex items-center gap-2 text-[0.58rem] font-sans font-black uppercase tracking-[0.2em]">
                 <li><Link href="/" className="text-ink-muted hover:text-crimson transition-colors">Home</Link></li>
                 <li className="text-rule" aria-hidden>—</li>
-                <li><Link href={`/topics/${article.topic}/`} className="text-crimson hover:text-ink transition-colors">{topicName}</Link></li>
+                <li><Link href={`/topics/${articleData.topic}/`} className="text-crimson hover:text-ink transition-colors">{topicName}</Link></li>
               </ol>
             </nav>
 
@@ -169,9 +171,9 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
               {/* Meta */}
               <div className="flex items-center gap-4 flex-wrap">
                 <div className="flex items-center gap-3 text-[0.58rem] font-sans font-black uppercase tracking-widest text-ink-muted">
-                  <time dateTime={article.date}>{formatDate(article.date)}</time>
+                  <time dateTime={articleData.date}>{formatDate(articleData.date)}</time>
                   <span className="text-rule">·</span>
-                  <span>{article.readingTime} min read</span>
+                  <span>{articleData.readingTime} min read</span>
                 </div>
                 {/* Share inline */}
                 <div className="flex items-center gap-2">
@@ -181,9 +183,9 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
             </div>
 
             {/* Deck / excerpt */}
-            {article.excerpt && (
+            {articleData.excerpt && (
               <p className="mt-5 font-sans text-[1.05rem] text-ink leading-relaxed max-w-[720px] font-semibold border-l-[3px] border-crimson pl-5">
-                {article.excerpt}
+                {articleData.excerpt}
               </p>
             )}
           </div>
@@ -195,7 +197,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
 
             {/* ══ LEFT: Article Body ════════════════════════════════════════ */}
             <article className="lg:pr-12 xl:pr-16">
-              <ArticleContent content={article.content} />
+              <ArticleContent content={articleData.content} />
 
               {/* End ornament */}
               <div className="my-14 flex items-center gap-5">
@@ -267,7 +269,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
                           </div>
                         )}
                         <p className="text-[0.55rem] font-sans font-black uppercase tracking-[0.25em] text-crimson mb-1.5">{getTopicName(rel.topic)}</p>
-                        <h4 className="font-serif text-[1rem] font-black text-ink group-hover:text-crimson transition-colors leading-snug">{rel.isLive ? `Live: ${rel.title}` : rel.title}</h4>
+                        <h4 className="font-serif text-[1rem] font-black text-ink group-hover:text-crimson transition-colors leading-snug">{(rel as Article).isLive ? `Live: ${rel.title}` : rel.title}</h4>
                       </Link>
                     </article>
                   ))}
@@ -321,26 +323,29 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
                     <div className="flex-1 h-[2px] bg-ink" />
                   </div>
                   <ul className="divide-y divide-rule">
-                    {trendingArticles.map((a, i) => (
-                      <li key={a.slug} className="group py-4">
-                        <Link href={`/articles/${a.slug}/`} className="flex gap-3 items-start">
-                          <span className="font-sans text-[1.6rem] font-black text-ink/[0.08] leading-none tabular-nums select-none flex-shrink-0 w-8 pt-0.5">
-                            {String(i + 1).padStart(2, '0')}
-                          </span>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[0.52rem] font-sans font-black uppercase tracking-[0.22em] text-crimson mb-1">
-                              {getTopicName(a.topic)}
-                            </p>
-                            <h4 className="font-sans text-[0.87rem] font-bold text-ink group-hover:text-crimson transition-colors leading-snug mb-1.5">
-                              {a.isLive ? `Live: ${a.title}` : a.title}
-                            </h4>
-                            <p className="text-[0.55rem] font-sans font-black uppercase tracking-widest text-ink-muted/60">
-                              {formatDate(a.date)}
-                            </p>
-                          </div>
-                        </Link>
-                      </li>
-                    ))}
+                    {trendingArticles.map((a, i) => {
+                      const tArt = a as Article;
+                      return (
+                        <li key={a.slug} className="group py-4">
+                          <Link href={`/articles/${a.slug}/`} className="flex gap-3 items-start">
+                            <span className="font-sans text-[1.6rem] font-black text-ink/[0.08] leading-none tabular-nums select-none flex-shrink-0 w-8 pt-0.5">
+                              {String(i + 1).padStart(2, '0')}
+                            </span>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[0.52rem] font-sans font-black uppercase tracking-[0.22em] text-crimson mb-1">
+                                {getTopicName(a.topic)}
+                              </p>
+                              <h4 className="font-sans text-[0.87rem] font-bold text-ink group-hover:text-crimson transition-colors leading-snug mb-1.5">
+                                {tArt.isLive ? `Live: ${tArt.title}` : tArt.title}
+                              </h4>
+                              <p className="text-[0.55rem] font-sans font-black uppercase tracking-widest text-ink-muted/60">
+                                {formatDate(a.date)}
+                              </p>
+                            </div>
+                          </Link>
+                        </li>
+                      );
+                    })}
                   </ul>
                   <Link href="/" className="inline-flex items-center gap-1.5 mt-4 text-[0.58rem] font-sans font-black uppercase tracking-[0.2em] text-ink-muted hover:text-crimson transition-colors group">
                     View all <span className="group-hover:translate-x-0.5 transition-transform">→</span>
@@ -353,11 +358,11 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
                     <path d="M10 8C6.686 8 4 10.686 4 14v10h10V14H7c0-1.654 1.346-3 3-3V8zm14 0c-3.314 0-6 2.686-6 6v10h10V14h-7c0-1.654 1.346-3 3-3V8z"/>
                   </svg>
                   <p className="font-serif text-[1.1rem] font-black italic leading-[1.4] relative pt-5">
-                    {article.excerpt || 'Rigorous analysis for the working class. No concessions.'}
+                    {articleData.excerpt || 'Rigorous analysis for the working class. No concessions.'}
                   </p>
                   <div className="mt-5 pt-4 border-t border-parchment/20 flex items-center justify-between">
                     <cite className="text-[0.52rem] font-sans font-black uppercase tracking-[0.25em] text-parchment/50 not-italic">
-                      {topicName} · {formatDate(article.date)}
+                      {topicName} · {formatDate(articleData.date)}
                     </cite>
                     <div className="w-6 h-6 bg-parchment/10 flex items-center justify-center">
                       <span className="text-parchment text-[0.6rem] font-black">TC</span>
@@ -373,27 +378,30 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
                       <div className="flex-1 h-px bg-rule" />
                     </div>
                     <ul className="space-y-5">
-                      {relatedArticles.map((rel) => (
-                        <li key={rel.slug} className="group">
-                          <Link href={`/articles/${rel.slug}/`} className="block">
-                            {rel.image && (
-                              <div className="relative w-full overflow-hidden mb-3" style={{ aspectRatio: '16/8' }}>
-                                <Image src={rel.image} alt={rel.imageAlt || rel.title} fill sizes="320px"
-                                  className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-[1.03] transition-all duration-500" />
-                                <div className="absolute bottom-0 left-0 right-0 h-px bg-crimson opacity-0 group-hover:opacity-100 transition-opacity" />
-                              </div>
-                            )}
-                            <p className="text-[0.52rem] font-sans font-black uppercase tracking-[0.22em] text-crimson mb-1.5">{getTopicName(rel.topic)}</p>
-                            <h5 className="font-sans text-[0.87rem] font-bold text-ink group-hover:text-crimson transition-colors leading-snug">
-                              {rel.isLive ? `Live: ${rel.title}` : rel.title}
-                            </h5>
-                          </Link>
-                          <p className="text-[0.55rem] font-sans font-black uppercase tracking-widest text-ink-muted/60 mt-1.5">{formatDate(rel.date)}</p>
-                        </li>
-                      ))}
+                      {relatedArticles.map((rel) => {
+                        const rArt = rel as Article;
+                        return (
+                          <li key={rel.slug} className="group">
+                            <Link href={`/articles/${rel.slug}/`} className="block">
+                              {rel.image && (
+                                <div className="relative w-full overflow-hidden mb-3" style={{ aspectRatio: '16/8' }}>
+                                  <Image src={rel.image} alt={rel.imageAlt || rel.title} fill sizes="320px"
+                                    className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-[1.03] transition-all duration-500" />
+                                  <div className="absolute bottom-0 left-0 right-0 h-px bg-crimson opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </div>
+                              )}
+                              <p className="text-[0.52rem] font-sans font-black uppercase tracking-[0.22em] text-crimson mb-1.5">{getTopicName(rel.topic)}</p>
+                              <h5 className="font-sans text-[0.87rem] font-bold text-ink group-hover:text-crimson transition-colors leading-snug">
+                                {rArt.isLive ? `Live: ${rArt.title}` : rArt.title}
+                              </h5>
+                            </Link>
+                            <p className="text-[0.55rem] font-sans font-black uppercase tracking-widest text-ink-muted/60 mt-1.5">{formatDate(rel.date)}</p>
+                          </li>
+                        );
+                      })}
                     </ul>
                     <Link
-                      href={`/topics/${article.topic}/`}
+                      href={`/topics/${articleData.topic}/`}
                       className="inline-flex items-center gap-1.5 mt-6 text-[0.58rem] font-sans font-black uppercase tracking-[0.22em] border-b-2 border-crimson text-crimson hover:text-ink hover:border-ink transition-colors pb-0.5 group"
                     >
                       All {topicName} articles
