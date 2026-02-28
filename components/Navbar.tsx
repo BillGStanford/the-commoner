@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Topic } from '@/lib/types';
+import { getAllArticles } from '@/lib/data';
 
 interface NavbarProps {
   topics: Topic[];
@@ -11,6 +12,13 @@ interface NavbarProps {
 
 export default function Navbar({ topics }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [liveArticles, setLiveArticles] = useState<any[]>([]);
+
+  // Fetch live articles on client side to ensure hydration matches
+  // (or just render once)
+  useEffect(() => {
+    setLiveArticles(getAllArticles().filter((a) => a.isLive));
+  }, []);
 
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
@@ -20,7 +28,40 @@ export default function Navbar({ topics }: NavbarProps) {
   });
 
   return (
-    <header className="sticky top-0 z-50 bg-parchment no-print" style={{ borderBottom: '3px solid #1A1A1A' }}>
+    <header className="sticky top-0 z-50 bg-parchment no-print flex flex-col" style={{ borderBottom: '3px solid #1A1A1A' }}>
+
+      {/* ── BREAKING NEWS TICKER (Top of Navbar) ─────────────────────────── */}
+{liveArticles.length > 0 && (
+  <div className="bg-[#000] text-white border-y border-white/10 overflow-hidden relative z-50 h-10 flex items-center font-sans">
+    {/* STATIC BROADCAST LABEL */}
+    <div className="absolute left-0 top-0 bottom-0 bg-[#cc0000] px-4 flex items-center z-10 shadow-[4px_0_10px_rgba(0,0,0,0.5)]">
+      <span className="flex items-center gap-2">
+        <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+        <span className="font-black uppercase tracking-tighter text-sm italic">Breaking News</span>
+      </span>
+    </div>
+
+    {/* TICKER TRACK */}
+    <div className="flex whitespace-nowrap items-center h-full">
+      {/* The animation starts with an offset to clear the static label */}
+      <div className="inline-block animate-marquee-slow pl-[140px] flex items-center gap-12">
+        {/* Render the list twice for a seamless loop */}
+        {[...liveArticles, ...liveArticles].map((article, idx) => (
+          <div key={`${article.slug}-${idx}`} className="flex items-center gap-4">
+            <Link 
+              href={`/articles/${article.slug}/`}
+              className="text-[0.85rem] font-bold hover:text-[#cc0000] transition-colors tracking-tight"
+            >
+              {article.title}
+            </Link>
+            {/* CNN-style separator */}
+            <span className="text-[#cc0000] font-black text-lg opacity-80">•</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
 
       {/* ── Dateline Bar ── */}
       <div className="bg-parchment-dark border-b border-rule">
@@ -45,15 +86,15 @@ export default function Navbar({ topics }: NavbarProps) {
             >
               Donate
             </Link>
-<a
-  href="https://www.youtube.com/@thecommonertv"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="text-[0.62rem] font-sans font-black uppercase tracking-[0.2em] bg-crimson text-parchment px-4 py-2 hover:bg-crimson-light transition-colors"
-  onClick={() => setMobileOpen(false)}
->
-  Subscribe
-</a>
+            <a
+              href="https://www.youtube.com/@thecommonertv"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[0.62rem] font-sans font-black uppercase tracking-[0.2em] bg-crimson text-parchment px-4 py-2 hover:bg-crimson-light transition-colors"
+              onClick={() => setMobileOpen(false)}
+            >
+              Subscribe
+            </a>
           </nav>
 
           {/* Mobile hamburger */}
@@ -74,12 +115,8 @@ export default function Navbar({ topics }: NavbarProps) {
         </div>
       </div>
 
-      {/* ── Logo / Masthead ─────────────────────────────────────────────────
-          The logo lives at /public/images/logo.png
-          To swap it: replace that file. Recommended size: 800×280px PNG with
-          transparent or parchment (#F5F0E8) background.
-          ─────────────────────────────────────────────────────────────────── */}
-      <div className="border-b border-rule">
+      {/* ── Logo / Masthead ───────────────────────────────────────────────── */}
+      <div className="border-b border-rule bg-parchment">
         <div className="max-w-[1400px] mx-auto px-6 py-5 flex items-center justify-center">
           <Link href="/" aria-label="The Commoner — Home" className="block group">
             <Image
@@ -88,7 +125,7 @@ export default function Navbar({ topics }: NavbarProps) {
               width={400}
               height={140}
               priority
-              className="h-16 sm:h-20 md:h-[130px] w-auto object-contain group-hover:opacity-90 transition-opacity duration-200"
+              className="h-16 sm:h-20 md:h-[100px] w-auto object-contain group-hover:opacity-90 transition-opacity duration-200"
             />
           </Link>
         </div>
@@ -166,15 +203,15 @@ export default function Navbar({ topics }: NavbarProps) {
               <Link href="/donate" className="text-[0.62rem] font-sans font-black uppercase tracking-[0.2em] border border-parchment/30 text-parchment px-4 py-2 hover:bg-parchment/10 transition-colors" onClick={() => setMobileOpen(false)}>
                 Donate
               </Link>
-<a
-  href="https://www.youtube.com/@thecommonertv"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="text-[0.62rem] font-sans font-black uppercase tracking-[0.2em] bg-crimson text-parchment px-4 py-2 hover:bg-crimson-light transition-colors"
-  onClick={() => setMobileOpen(false)}
->
-  Subscribe
-</a>
+              <a
+                href="https://www.youtube.com/@thecommonertv"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[0.62rem] font-sans font-black uppercase tracking-[0.2em] bg-crimson text-parchment px-4 py-2 hover:bg-crimson-light transition-colors"
+                onClick={() => setMobileOpen(false)}
+              >
+                Subscribe
+              </a>
             </div>
           </div>
         </div>

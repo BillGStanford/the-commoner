@@ -86,38 +86,6 @@ h1, h2, h3, h4, h5, h6 {
    ARTICLE PROSE
    Full HTML support. Writers can use any of the elements below in
    articles.json "content" field. Mix and match freely.
-   ═══════════════════════════════════════════════════════════════════════════
-
-   QUICK REFERENCE — paste into your article content:
-
-   Paragraphs:        <p>Normal body copy.</p>
-   Lead para:         <p class="lead">Bigger intro paragraph.</p>
-   Drop cap:          <p class="drop-cap">First letter enlarged.</p>
-   Highlight text:    <span class="hl">crimson highlighted text</span>
-   Bold/em:           <strong>bold</strong>  <em>italic</em>
-
-   Headings:          <h2>Section title</h2>
-                      <h3>Sub-section</h3>
-                      <h4>Label heading</h4>
-
-   Blockquote:        <blockquote>Quote text.<cite>— Source</cite></blockquote>
-   Pull quote:        <blockquote class="pull">Big quote.</blockquote>
-   Ink box quote:     <blockquote class="ink-box">Dark bg quote.</blockquote>
-
-   Bullet list:       <ul><li>Item</li></ul>
-   Numbered list:     <ol><li>Item</li></ol>
-
-   Image + caption:   <figure>
-                        <img src="/images/articles/foo.jpg" alt="..." />
-                        <figcaption>Caption text here</figcaption>
-                      </figure>
-
-   Horizontal rule:   <hr />
-
-   Crimson kicker:    <p class="kicker">Economy</p>
-   Callout box:       <div class="callout"><p>Important note.</p></div>
-   Stat callout:      <div class="stat-block"><span class="num">35%</span><span class="label">of income on rent</span></div>
-
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .article-prose {
@@ -400,4 +368,26 @@ h1, h2, h3, h4, h5, h6 {
 @media print {
   .no-print { display: none !important; }
   body { background: white; }
+}
+
+/* ─── CUSTOM ANIMATIONS (Added for Live Feature) ──────────────────────── */
+
+/* Slow Flash Animation for Live Badges */
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Marquee Animation for Breaking News */
+@keyframes marquee-slow {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee-slow {
+  animation: marquee-slow 40s linear infinite;
 }

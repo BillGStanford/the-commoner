@@ -4,6 +4,11 @@
     "name": "Economy",
     "description": "Analysis of labor, capital, inequality, and the structures that govern economic life under late capitalism."
   },
+    {
+    "slug": "news",
+    "name": "News",
+    "description": "Breaking news and updates from around the world."
+  },
   {
     "slug": "usa",
     "name": "USA",

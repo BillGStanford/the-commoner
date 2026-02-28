@@ -1,5 +1,4 @@
 // Article page — Server Component with full SSG
-
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -20,10 +19,6 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 // ─── Content renderer ─────────────────────────────────────────────────────────
-// Supports both:
-//   • Rich HTML in articles.json: <h1>Hi</h1>, <p class="lead">...</p>, etc.
-//   • Legacy plain-text with \n\n paragraphs and ## headings
-
 function ArticleContent({ content }: { content: string }) {
   const isHtml = /<\/?[a-z][\s\S]*>/i.test(content);
 
@@ -57,6 +52,10 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://thecommoner.com';
   const articleUrl = `${siteUrl}/articles/${article.slug}/`;
 
+  // Determine Live Status
+  const isLive = article.isLive || false;
+  const displayTitle = isLive ? `Live: ${article.title}` : article.title;
+
   const allArticles = getAllArticles();
   const relatedArticles = allArticles
     .filter((a) => a.topic === article.topic && a.slug !== article.slug)
@@ -88,11 +87,19 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
             {/* Dark gradient from bottom — text legibility */}
             <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent" />
 
-            {/* Topic badge — top left */}
-            <div className="absolute top-6 left-6">
+            {/* Top Left Badges Container */}
+            <div className="absolute top-6 left-6 flex gap-3">
+              {/* Live Badge (Conditionally Rendered) */}
+              {isLive && (
+                <span className="animate-pulse-slow bg-crimson text-parchment text-[0.55rem] font-sans font-black uppercase tracking-[0.3em] px-3 py-1.5 border border-parchment/20 shadow-lg">
+                  ● Live
+                </span>
+              )}
+              
+              {/* Topic Badge */}
               <Link
                 href={`/topics/${article.topic}/`}
-                className="inline-block bg-crimson text-parchment text-[0.55rem] font-sans font-black uppercase tracking-[0.3em] px-3 py-1.5 hover:bg-parchment hover:text-crimson transition-colors"
+                className="inline-block bg-ink/80 text-parchment text-[0.55rem] font-sans font-black uppercase tracking-[0.3em] px-3 py-1.5 hover:bg-parchment hover:text-ink transition-colors backdrop-blur-sm"
               >
                 {topicName}
               </Link>
@@ -101,7 +108,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
             {/* Headline overlay at bottom of hero */}
             <div className="absolute bottom-0 left-0 right-0 px-6 md:px-12 pb-10 max-w-[1400px] mx-auto">
               <h1 className="font-serif text-parchment text-[clamp(1.8rem,4.5vw,3.4rem)] font-black leading-[1.02] tracking-[-0.02em] drop-shadow-lg max-w-[820px]">
-                {article.title}
+                {displayTitle}
               </h1>
             </div>
           </div>
@@ -109,14 +116,21 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
           /* No image — ink header block */
           <div className="bg-ink border-b-[3px] border-crimson">
             <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-16">
-              <Link
-                href={`/topics/${article.topic}/`}
-                className="inline-block bg-crimson text-parchment text-[0.55rem] font-sans font-black uppercase tracking-[0.3em] px-3 py-1.5 mb-6 hover:bg-parchment hover:text-crimson transition-colors"
-              >
-                {topicName}
-              </Link>
+              <div className="flex items-center gap-4 mb-6">
+                 {isLive && (
+                  <span className="animate-pulse-slow bg-crimson text-parchment text-[0.55rem] font-sans font-black uppercase tracking-[0.3em] px-3 py-1.5 border border-parchment/20">
+                    ● Live
+                  </span>
+                )}
+                <Link
+                  href={`/topics/${article.topic}/`}
+                  className="inline-block bg-parchment text-ink text-[0.55rem] font-sans font-black uppercase tracking-[0.3em] px-3 py-1.5 hover:bg-crimson hover:text-parchment transition-colors"
+                >
+                  {topicName}
+                </Link>
+              </div>
               <h1 className="font-serif text-parchment text-[clamp(1.8rem,4.5vw,3.4rem)] font-black leading-[1.02] tracking-[-0.02em] max-w-[820px]">
-                {article.title}
+                {displayTitle}
               </h1>
             </div>
           </div>
@@ -161,7 +175,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
                 </div>
                 {/* Share inline */}
                 <div className="flex items-center gap-2">
-                  <ShareButtons url={articleUrl} title={article.title} />
+                  <ShareButtons url={articleUrl} title={displayTitle} />
                 </div>
               </div>
             </div>
@@ -200,7 +214,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
                   <p className="text-[0.55rem] font-sans font-black uppercase tracking-[0.3em] text-ink-muted">
                     Share this dispatch
                   </p>
-                  <ShareButtons url={articleUrl} title={article.title} />
+                  <ShareButtons url={articleUrl} title={displayTitle} />
                 </div>
               </div>
 
@@ -253,7 +267,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
                           </div>
                         )}
                         <p className="text-[0.55rem] font-sans font-black uppercase tracking-[0.25em] text-crimson mb-1.5">{getTopicName(rel.topic)}</p>
-                        <h4 className="font-serif text-[1rem] font-black text-ink group-hover:text-crimson transition-colors leading-snug">{rel.title}</h4>
+                        <h4 className="font-serif text-[1rem] font-black text-ink group-hover:text-crimson transition-colors leading-snug">{rel.isLive ? `Live: ${rel.title}` : rel.title}</h4>
                       </Link>
                     </article>
                   ))}
@@ -284,7 +298,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
                   </Link>
                   <div className="flex items-center justify-center gap-5 mt-4 pt-4 border-t border-rule">
                     <span className="text-[0.55rem] font-sans font-black uppercase tracking-widest text-ink-muted">Follow us</span>
-                    {/* Social icons — swap hrefs as needed */}
+                    {/* Social icons */}
                     {[
                       { label: 'Twitter/X', path: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z' },
                       { label: 'Facebook', path: 'M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z' },
@@ -318,7 +332,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
                               {getTopicName(a.topic)}
                             </p>
                             <h4 className="font-sans text-[0.87rem] font-bold text-ink group-hover:text-crimson transition-colors leading-snug mb-1.5">
-                              {a.title}
+                              {a.isLive ? `Live: ${a.title}` : a.title}
                             </h4>
                             <p className="text-[0.55rem] font-sans font-black uppercase tracking-widest text-ink-muted/60">
                               {formatDate(a.date)}
@@ -371,7 +385,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
                             )}
                             <p className="text-[0.52rem] font-sans font-black uppercase tracking-[0.22em] text-crimson mb-1.5">{getTopicName(rel.topic)}</p>
                             <h5 className="font-sans text-[0.87rem] font-bold text-ink group-hover:text-crimson transition-colors leading-snug">
-                              {rel.title}
+                              {rel.isLive ? `Live: ${rel.title}` : rel.title}
                             </h5>
                           </Link>
                           <p className="text-[0.55rem] font-sans font-black uppercase tracking-widest text-ink-muted/60 mt-1.5">{formatDate(rel.date)}</p>

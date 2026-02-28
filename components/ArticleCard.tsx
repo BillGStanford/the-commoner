@@ -41,6 +41,8 @@ export default function ArticleCard({
   size = 'default',
 }: ArticleCardProps) {
   const topicName = getTopicName(article.topic);
+  const isLive = article.isLive || false;
+  const displayTitle = isLive ? `Live: ${article.title}` : article.title;
 
   if (size === 'large') {
     return (
@@ -64,14 +66,18 @@ export default function ArticleCard({
           </div>
           <div className="lg:w-1/3 flex flex-col justify-center">
             <div className="flex items-center gap-2 mb-4">
-              <span className="bg-crimson text-parchment text-[0.6rem] font-black tracking-widest uppercase px-2 py-0.5">Urgent</span>
+              {isLive && (
+                <span className="animate-pulse-slow bg-crimson text-parchment text-[0.6rem] font-black tracking-widest uppercase px-2 py-0.5">
+                  ● Live
+                </span>
+              )}
               <Link href={`/topics/${article.topic}/`} className="text-[0.65rem] font-black tracking-[0.2em] uppercase text-ink/40 hover:text-crimson transition-colors">
                 {topicName}
               </Link>
             </div>
             <Link href={`/articles/${article.slug}/`} className="block">
               <h2 className="font-serif text-4xl md:text-5xl font-black text-ink group-hover:text-crimson transition-colors leading-[0.9] mb-6 tracking-tighter">
-                {article.title}
+                {displayTitle}
               </h2>
             </Link>
             <p className="font-sans text-lg text-ink-soft leading-tight mb-8 font-bold italic border-l-2 border-ink/10 pl-4">
@@ -108,12 +114,19 @@ export default function ArticleCard({
           </Link>
 
           <div className="flex-1 min-w-0">
-            <Link href={`/topics/${article.topic}/`} className="text-[0.6rem] font-black tracking-widest uppercase text-crimson mb-1 block">
-              {topicName}
-            </Link>
+            <div className="flex items-center gap-2 mb-1">
+               {isLive && (
+                <span className="animate-pulse-slow bg-crimson text-parchment text-[0.5rem] font-black tracking-widest uppercase px-1.5 py-0.5">
+                  ● Live
+                </span>
+              )}
+              <Link href={`/topics/${article.topic}/`} className="text-[0.6rem] font-black tracking-widest uppercase text-crimson">
+                {topicName}
+              </Link>
+            </div>
             <Link href={`/articles/${article.slug}/`} className="block">
               <h3 className="font-serif text-xl font-black text-ink group-hover:underline decoration-4 decoration-crimson leading-none mb-2 tracking-tight">
-                {article.title}
+                {displayTitle}
               </h3>
             </Link>
             <div className="flex items-center gap-3 text-[0.65rem] font-black tracking-widest uppercase text-ink/40">
@@ -149,12 +162,20 @@ export default function ArticleCard({
         </div>
       </div>
 
-      <Link href={`/topics/${article.topic}/`} className="text-xs font-black tracking-[0.3em] uppercase text-crimson mb-3">
-        {topicName}
-      </Link>
+      <div className="flex items-center gap-2 mb-3">
+        {isLive && (
+            <span className="animate-pulse-slow bg-crimson text-parchment text-[0.55rem] font-black tracking-widest uppercase px-2 py-0.5">
+              ● Live
+            </span>
+        )}
+        <Link href={`/topics/${article.topic}/`} className="text-xs font-black tracking-[0.3em] uppercase text-crimson">
+          {topicName}
+        </Link>
+      </div>
+      
       <Link href={`/articles/${article.slug}/`} className="block group">
         <h3 className="font-serif text-3xl font-black text-ink group-hover:text-crimson transition-colors leading-[0.85] mb-4 tracking-tighter">
-          {article.title}
+          {displayTitle}
         </h3>
       </Link>
       <p className="font-sans text-base text-ink-muted leading-snug mb-6 line-clamp-3 font-medium">

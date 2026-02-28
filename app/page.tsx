@@ -1,6 +1,4 @@
 // Homepage — Server Component
-// SSG: statically generated at build time
-
 import { getAllArticles, getFeaturedArticle, getWriterBySlug, getAllTopics } from '@/lib/data';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -49,12 +47,11 @@ export default function HomePage() {
       article: (typeof allArticles)[0];
     }>;
 
-  // Articles for the secondary row (after latest 5, excluding featured)
   const secondaryArticles = allArticles.filter((a) => !a.featured).slice(5, 8);
 
   return (
     <div className="min-h-screen bg-parchment selection:bg-crimson selection:text-parchment">
-
+      
       {/* ── HERO FEATURED ARTICLE ─────────────────────────────────────────── */}
       {featured && (() => {
         const author = getWriterBySlug(featured.authorSlug);
@@ -63,7 +60,6 @@ export default function HomePage() {
           <section aria-label="Featured article" className="border-b-2 border-ink">
             <div className="max-w-[1400px] mx-auto px-6">
 
-              {/* Section eyebrow */}
               <div className="flex items-center gap-4 py-5 border-b border-rule">
                 <span className="bg-crimson text-parchment text-[0.55rem] font-sans font-black uppercase tracking-[0.28em] px-3 py-1.5">
                   Priority Dispatch
@@ -74,12 +70,9 @@ export default function HomePage() {
                 </span>
               </div>
 
-              {/* Hero grid */}
               <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-0 py-10 md:py-14">
 
-                {/* Left: image + headline */}
                 <div className="lg:pr-12 lg:border-r lg:border-rule">
-                  {/* Hero image */}
                   <Link href={`/articles/${featured.slug}/`} className="group block">
                     <div className="relative w-full overflow-hidden mb-8" style={{ aspectRatio: '16/9' }}>
                       <ArticleImage
@@ -88,31 +81,26 @@ export default function HomePage() {
                         sizes="(max-width: 768px) 100vw, 70vw"
                         className="group-hover:scale-[1.02]"
                       />
-                      {/* Crimson overlay strip on hover */}
                       <div className="absolute inset-0 border-b-4 border-crimson opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
 
-                    {/* Topic kicker */}
                     <p className="text-[0.62rem] font-sans font-black uppercase tracking-[0.3em] text-crimson mb-4">
                       {featured.topic?.replace(/-/g, ' ')}
                     </p>
 
-                    {/* Headline */}
                     <h2
                       className="font-serif text-[clamp(2.2rem,5vw,4rem)] font-black leading-[1.02] tracking-[-0.02em] text-ink group-hover:text-crimson transition-colors mb-5"
                     >
-                      {featured.title}
+                      {featured.isLive ? `Live: ${featured.title}` : featured.title}
                     </h2>
                   </Link>
 
-                  {/* Deck */}
                   {featured.excerpt && (
                     <p className="font-sans text-[1.05rem] text-ink-muted leading-relaxed max-w-[640px] mb-8 border-l-[3px] border-crimson pl-5">
                       {featured.excerpt}
                     </p>
                   )}
 
-                  {/* Byline row */}
                   <div className="flex items-center gap-4 pt-5 border-t border-rule">
                     <div className="w-9 h-9 rounded-full bg-ink flex items-center justify-center text-parchment text-xs font-black font-sans flex-shrink-0">
                       {author.name.charAt(0)}
@@ -134,10 +122,8 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                {/* Right sidebar: related in topic + pull quote */}
                 <aside className="hidden lg:flex flex-col pl-12 pt-2 gap-10">
 
-                  {/* Pull quote */}
                   <blockquote className="border-l-[4px] border-crimson pl-7 py-4">
                     <p className="font-serif text-[1.45rem] font-black italic leading-[1.28] text-ink mb-3">
                       &ldquo;The analysis capital fears most is the one that names it plainly.&rdquo;
@@ -147,7 +133,6 @@ export default function HomePage() {
                     </cite>
                   </blockquote>
 
-                  {/* More in topic */}
                   <div className="flex-1">
                     <p className="text-[0.55rem] font-sans font-black uppercase tracking-[0.28em] text-ink-muted mb-5">
                       More in {featured.topic?.replace(/-/g, ' ')}
@@ -168,7 +153,7 @@ export default function HomePage() {
                                 />
                               </div>
                               <p className="font-sans text-[0.82rem] font-bold text-ink group-hover:text-crimson leading-snug transition-colors">
-                                {a.title}
+                                {a.isLive ? `Live: ${a.title}` : a.title}
                               </p>
                             </Link>
                           </li>
@@ -176,7 +161,6 @@ export default function HomePage() {
                     </ul>
                   </div>
 
-                  {/* Topic pill list */}
                   <div className="border-t border-rule pt-6">
                     <p className="text-[0.55rem] font-sans font-black uppercase tracking-[0.28em] text-ink-muted mb-4">Browse Sections</p>
                     <div className="flex flex-wrap gap-2">
@@ -202,10 +186,7 @@ export default function HomePage() {
       <div className="max-w-[1400px] mx-auto px-6 py-12 md:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1px_360px] gap-0">
 
-          {/* ── LEFT: Latest Articles Feed ── */}
           <section className="lg:pr-12" aria-label="Latest articles">
-
-            {/* Section header */}
             <div className="flex items-center gap-4 mb-10">
               <span className="text-[0.55rem] font-sans font-black uppercase tracking-[0.3em] text-ink-muted whitespace-nowrap">
                 Recent Files
@@ -213,27 +194,23 @@ export default function HomePage() {
               <div className="flex-1 h-[2px] bg-ink" />
             </div>
 
-            {/* Article list */}
             <div className="divide-y divide-rule">
               {latestArticles.map((article, i) => {
                 const author = getWriterBySlug(article.authorSlug);
                 if (!author) return null;
                 return (
                   <article key={article.slug} className="group py-8 flex gap-6 items-start">
-
-                    {/* Ghost index number */}
                     <span className="font-sans text-[2.5rem] font-black text-ink/[0.06] leading-none select-none flex-shrink-0 w-12 text-right pt-1 tabular-nums">
                       {String(i + 1).padStart(2, '0')}
                     </span>
 
-                    {/* Text content */}
                     <div className="flex-1 min-w-0">
                       <p className="text-[0.58rem] font-sans font-black uppercase tracking-[0.25em] text-crimson mb-2">
                         {article.topic?.replace(/-/g, ' ')}
                       </p>
                       <Link href={`/articles/${article.slug}/`} className="block">
                         <h3 className="font-serif text-[1.35rem] font-black leading-[1.15] tracking-tight text-ink group-hover:text-crimson transition-colors mb-2">
-                          {article.title}
+                          {article.isLive ? `Live: ${article.title}` : article.title}
                         </h3>
                       </Link>
                       {article.excerpt && (
@@ -250,7 +227,6 @@ export default function HomePage() {
                       </div>
                     </div>
 
-                    {/* Thumbnail */}
                     <Link
                       href={`/articles/${article.slug}/`}
                       className="flex-shrink-0 relative w-28 h-20 sm:w-36 sm:h-24 overflow-hidden"
@@ -269,7 +245,6 @@ export default function HomePage() {
               })}
             </div>
 
-            {/* Archive CTA block */}
             <div className="mt-12 flex items-stretch gap-0">
               <div className="w-1.5 bg-crimson flex-shrink-0" />
               <div className="flex-1 border border-l-0 border-rule p-8 flex items-center justify-between gap-6 bg-parchment-dark">
@@ -290,7 +265,6 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Secondary article row — image-forward cards */}
             {secondaryArticles.length > 0 && (
               <div className="mt-14">
                 <div className="flex items-center gap-4 mb-8">
@@ -318,7 +292,7 @@ export default function HomePage() {
                             {article.topic?.replace(/-/g, ' ')}
                           </p>
                           <h4 className="font-serif text-[1.05rem] font-black leading-snug text-ink group-hover:text-crimson transition-colors">
-                            {article.title}
+                            {article.isLive ? `Live: ${article.title}` : article.title}
                           </h4>
                         </Link>
                         <p className="font-sans text-[0.62rem] font-black uppercase tracking-widest text-ink-muted mt-2">
@@ -332,13 +306,10 @@ export default function HomePage() {
             )}
           </section>
 
-          {/* Vertical rule divider */}
           <div className="hidden lg:block bg-rule" />
 
-          {/* ── RIGHT: Sidebar ── */}
           <aside className="lg:pl-12 space-y-14" aria-label="Topics and highlights">
 
-            {/* Subject Highlights */}
             <div>
               <div className="flex items-center gap-4 mb-8">
                 <span className="text-[0.55rem] font-sans font-black uppercase tracking-[0.3em] text-ink-muted whitespace-nowrap">
@@ -353,7 +324,6 @@ export default function HomePage() {
                   if (!author) return null;
                   return (
                     <article key={article.slug} className="group py-6">
-                      {/* Thumbnail */}
                       <Link href={`/articles/${article.slug}/`} className="block relative w-full overflow-hidden mb-4" style={{ aspectRatio: '16/8' }}>
                         <ArticleImage
                           src={article.image}
@@ -361,7 +331,6 @@ export default function HomePage() {
                           sizes="360px"
                           className="grayscale group-hover:grayscale-0 group-hover:scale-[1.03]"
                         />
-                        {/* Topic label over image */}
                         <span className="absolute bottom-0 left-0 bg-crimson text-parchment text-[0.52rem] font-sans font-black uppercase tracking-[0.22em] px-3 py-1.5">
                           {topic.name}
                         </span>
@@ -369,7 +338,7 @@ export default function HomePage() {
 
                       <Link href={`/articles/${article.slug}/`}>
                         <h4 className="font-serif text-[1.1rem] font-black leading-[1.2] text-ink group-hover:text-crimson transition-colors mb-2">
-                          {article.title}
+                          {article.isLive ? `Live: ${article.title}` : article.title}
                         </h4>
                       </Link>
                       <p className="text-[0.62rem] font-sans font-black uppercase tracking-widest text-ink-muted">
@@ -381,7 +350,6 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Central Topic Index */}
             <div>
               <div className="flex items-center gap-4 mb-6">
                 <span className="text-[0.55rem] font-sans font-black uppercase tracking-[0.3em] text-ink-muted whitespace-nowrap">
@@ -415,9 +383,7 @@ export default function HomePage() {
               </nav>
             </div>
 
-            {/* Dispatch / Newsletter block */}
             <div className="bg-ink text-parchment p-8 relative overflow-hidden">
-              {/* Decorative background text */}
               <span className="absolute -bottom-6 -right-4 font-serif font-black text-[8rem] leading-none text-parchment/[0.04] select-none pointer-events-none">
                 TC
               </span>
@@ -439,7 +405,6 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* System status micro-widget */}
             <div className="border-l-[3px] border-crimson pl-5 py-1">
               <p className="text-[0.52rem] font-sans font-black uppercase tracking-[0.28em] text-ink-muted mb-1.5">
                 System Status
