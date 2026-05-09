@@ -74,8 +74,8 @@
   "authorSlug": "sidoc-haytu",
   "topic": "news",
   "date": "2026-02-28",
-  "featured": false,
-  "isLive": false,
+  "featured": true,
+  "isLive": true,
   "image": "/images/articles/iran-striked.jpg",
   "imageAlt": "Smoke rising over Tehran after US-Israeli strikes",
   "readingTime": 7
@@ -88,8 +88,8 @@
   "authorSlug": "sidoc-haytu",
   "topic": "news",
   "date": "2026-02-28",
-  "featured": false,
-  "isLive": false,
+  "featured": true,
+  "isLive": true,
   "image": "/images/articles/koh.JPG",
   "imageAlt": "Ayatollah Ali Khamenei in Tehran",
   "readingTime": 8
